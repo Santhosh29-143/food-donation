@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login & Signup</title>
+    <style>
+        a {
+            text-decoration: none;
+        }
+
+        body {
+            margin: 0px;
+            padding: 0px;
+            font-family: Arial, sans-serif;
+            height: 100vh;
+        }
+
+        #log {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: url(./login.jpg) no-repeat;
+            background-size: cover;
+        }
+
+        #container {
+            width: 500px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid #333;
+            border-radius: 5px;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #FF8600;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #e07400;
+        }
+
+        .message {
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .message a {
+            color: #FF8600;
+        }
+
+        #invalid {
+            color: red;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Login/Signup Card -->
+    <div id="log">
+        <div id="container">
+            <h1 id="form-title">Login</h1>
+            <label>Username / Email</label>
+            <input id="users" type="text" placeholder="Enter your username/email">
+            <label>Password</label>
+            <input id="pass" type="password" placeholder="Enter your password">
+            <div id="invalid"></div>
+            <button onclick="handleForm()">Login</button>
+            <div class="message">
+                <span id="toggle-message">Don't have an account? <a href="javascript:void(0)" onclick="toggleForm()">Signup here</a></span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let isLoginMode = true;
+
+        // Toggle between Login and Signup form inside the same card
+        function toggleForm() {
+            isLoginMode = !isLoginMode;
+            const formTitle = document.getElementById('form-title');
+            const button = document.querySelector('button');
+            const toggleMessage = document.getElementById('toggle-message');
+
+            if (isLoginMode) {
+                formTitle.textContent = 'Login';
+                button.textContent = 'Login';
+                toggleMessage.innerHTML = "Don't have an account? <a href='javascript:void(0)' onclick='toggleForm()'>Signup here</a>";
+            } else {
+                formTitle.textContent = 'Sign Up';
+                button.textContent = 'Sign Up';
+                toggleMessage.innerHTML = "Already have an account? <a href='javascript:void(0)' onclick='toggleForm()'>Login here</a>";
+            }
+        }
+
+        // Handle the form logic (Login or Signup based on isLoginMode)
+        function handleForm() {
+            const username = document.getElementById('users').value;
+            const password = document.getElementById('pass').value;
+
+            if (isLoginMode) {
+                login(username, password);
+            } else {
+                signup(username, password);
+            }
+        }
+
+        // Handle Login functionality
+        function login(username, password) {
+            var storedUser = localStorage.getItem(username);
+            if (storedUser) {
+                var user = JSON.parse(storedUser);
+                if (user.password === password) {
+                    alert('Login successful!');
+                    window.location.href = './iship.html'; // Navigate to the iship.html page
+                } else {
+                    document.getElementById('invalid').innerText = 'Invalid password. Please try again.';
+                }
+            } else {
+                document.getElementById('invalid').innerText = 'No account found with this username/email.';
+            }
+        }
+
+        // Handle Signup functionality
+        function signup(username, password) {
+            var storedUser = localStorage.getItem(username);
+            if (storedUser) {
+                alert('Account already exists with this email.');
+            } else {
+                // Create new user object and save it in localStorage
+                var newUser = {
+                    username: username,
+                    password: password
+                };
+                localStorage.setItem(username, JSON.stringify(newUser));
+                alert('Signup successful!');
+                toggleForm();  // Switch to the login form after successful signup
+            }
+        }
+    </script>
+</body>
+
+</html>
